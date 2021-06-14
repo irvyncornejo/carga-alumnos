@@ -1,3 +1,5 @@
+const openSpreadSheet = (id) => SpreadsheetApp.openById(id)
+
 /**
  * 
  */
@@ -68,18 +70,39 @@ const updteSheets = () =>{
   ss.insertSheet().setName('1')
 }
 
-const copyData = () =>{
-  const ss = SpreadsheetApp.openById('11Nu6nSvTEeoKVKunlC56bMRNRa3taDYXvEYRcZZLyCg')
-  const ssBase = SpreadsheetApp.openById('1g1MMx5iIdUnUipWLif1Y9w0n35xAAIT_xZUshtO888A')
-  cellInsert = ssBase.getSheetByName('base').getRange('A1')
+const copySheet = (id) =>{
+  const ss = SpreadsheetApp.openById(id)
   sheet = ss.getSheets()[0]
-  lastRow = sheet.getLastRow()
-  lastColumn = sheet.getLastColumn()
-  data = sheet.getRange(3, 1, lastRow, lastColumn)
+  const ssBase = SpreadsheetApp.openById('1g1MMx5iIdUnUipWLif1Y9w0n35xAAIT_xZUshtO888A')
   sheet.copyTo(ssBase)
+}
 
-  
-  
+const getSheetsBase = () => {
+  const ssBase = SpreadsheetApp.openById('1g1MMx5iIdUnUipWLif1Y9w0n35xAAIT_xZUshtO888A')
+  sheets = ssBase.getSheets()
+  sheetsName = []
+  sheets.forEach(sheet => {
+    if(sheet.getName().includes('Directorio de Alumnos')){
+      sheetsName.push(sheet.getName())
+    }
+  })
+  copyDataSheets(ssBase, sheetsName)
+}
+
+const copyDataSheets = (ssBase, sheetsName) => {
+  sheetBase = ssBase.getSheetByName('1')
+  count = 1
+  sheetsName.forEach(name =>{
+    sheet = ssBase.getSheetByName(name)
+    lastRow = sheet.getLastRow()
+    lastColumn = sheet.getLastColumn()
+    data = sheet.getRange(3, 1, lastRow, lastColumn)
+    rangeA1Notation = data.getA1Notation()
+    lastValue = parseInt(rangeA1Notation.slice(5))
+    data.moveTo(sheetBase.getRange(`A${count}`))
+    count += lastValue
+    ssBase.deleteSheet(sheet)
+  })
 }
 
 const deleteFiles = (documentsId) =>{
@@ -105,7 +128,9 @@ const getFilesNames = () => {
     }
   }
   moveFiles(documentsId, bucketId)
-  getData(documentsId)
+  documentsId.forEach(id => copySheet(id))
+  getSheetsBase()
+  //getData(documentsId)
   getDelta()
 
 }
