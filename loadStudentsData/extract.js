@@ -54,9 +54,14 @@ const updteSheets = () =>{
 }
 
 const copySheet = (id) =>{
-  const ss = SpreadsheetApp.openById(id)
-  sheet = ss.getSheets()[0]
   const ssBase = SpreadsheetApp.openById('1g1MMx5iIdUnUipWLif1Y9w0n35xAAIT_xZUshtO888A')
+  const ss = SpreadsheetApp.openById(id)
+  const nameSpreadSheet =  ss.getName()
+  sheet = ss.getSheets()[0]
+  lastRow = sheet.getLastRow()
+  lastColumn = sheet.getLastColumn()
+  section = new Section(nameSpreadSheet).getSection()
+  sheet.getRange(1,lastColumn+1, lastRow).setValue(section)
   sheet.copyTo(ssBase)
 }
 
@@ -87,7 +92,7 @@ const copyDataSheets = (ssBase, sheetsName) => {
     ssBase.deleteSheet(sheet)
   })
   sheetBase.moveColumns(sheetBase.getRange('B:B'), 1)
-  Utilities.sleep(500)
+  Utilities.sleep(100)
 }
 
 const moveColumn = () => {

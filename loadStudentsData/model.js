@@ -52,8 +52,8 @@ class Student {
       'inscripcionCondicionada': this.alumno[35],
       'nombreNormalizado': this.createFullName()
       },
-    'claveAlumno': parseInt(this.alumno[1]),
     'curp': this.alumno[0],
+    'claveAlumno': parseInt(this.alumno[1]),
     'nombreAbreviado': this.alumno[5].trim(),
     'grado': parseInt(this.alumno[28]),
     'grupodeEstudio': null,
@@ -64,5 +64,24 @@ class Student {
   }
 }
 
-
+class Section{
+  constructor(string){
+    this.string = string
+  }
+  getSection(){
+    let valueSection = ''
+    const sections = {
+      'ach': 'bachillerato', 
+      'rep': 'preparatoria', 
+      'ec': 'secundaria', 
+      'rim': 'primaria'
+    }
+    Object.keys(sections).forEach( section => {
+      let re = new RegExp(section)
+      let result = re.test(this.string)
+      if(result) valueSection = sections[`${section}`]
+    })
+    return valueSection 
+  }
+}
 

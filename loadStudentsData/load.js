@@ -6,10 +6,12 @@ const getDataDelta = () => {
   Logger.log(curps)
 }
 
-const createStudent = () => {
+const createStudent = (curp) => {
   const ssBase = SpreadsheetApp.openById('1g1MMx5iIdUnUipWLif1Y9w0n35xAAIT_xZUshtO888A')
-  sheetBase = ssBase.getSheetByName('0')
-  data = sheetBase.getRange('A1:AJ1').getValues()[0]
+  sheetBase = ssBase.getSheetByName('query')
+  valueCurp = sheetBase.getRange('A2').setValue(curp)
+  Utilities.sleep(100)
+  data = sheetBase.getRange('A1:AK1').getValues()[0]
   const student = new Student(data).create()
   conexionFirestore().createDocument(`administrativos/${student['datosAlumno']['nombreNormalizado']}`, student)
 }
